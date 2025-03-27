@@ -55,7 +55,17 @@ public class Main_math {
 		System.out.println("\n === 내림 한 후 ===");
 		
 		System.out.println("db3 => " + (int)Math.floor(db3) + ", db4 => " + (int)Math.floor(db4) + ", db5 => " + (int)Math.floor(db5));
+		//db3 => 54, db4 => 54, db5 => 54
 		
+		
+		// 4. >>절대값에 대해서 알아본다 <<
+		
+		System.out.println("\n ----절대값-----");
+		
+		int a= 20 , b = -30;
+		System.out.println("a => " + a +" b => " +b);
+		
+		System.out.println("a => " + Math.abs(a) +" b => " +Math.abs(b));
 		
 		
 		
