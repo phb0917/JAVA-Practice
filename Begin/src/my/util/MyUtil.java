@@ -1,5 +1,6 @@
 package my.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
@@ -103,6 +104,99 @@ public class MyUtil {
 				return result;
 		}
 		}
+// 주민번호 7자리를 입력받아서 만나이를 구해주는메소드 생성
+	public static int age(String jubun) throws Exception {
+		// 숫자로만 이루어지지 않았으므로 
+	
+		int age = 0;
+		try {
+			if(jubun.length() != 7 || !(jubun.endsWith("1")||jubun.endsWith("2")||jubun.endsWith("3")||jubun.endsWith("4"))) {
+				throw new Exception();
+			}
+			
+			Integer.parseInt(jubun); // jubun 이 " 안녕하세요하하" 이라면 
+									// 숫자로만 이루어지지 않았으므로 
+			// 입력받은 주번이 "9803321" 와 같이 달력에 존재하지 않는 주민번호라면 
+			String yymmdd = jubun.substring(0,6);
+			String str =("1".equals(jubun.substring(6)) || "2".equals(jubun.substring(6)))? "19":"20";
+			String birthday = str+ yymmdd; // "19980332
+			// birthday 가 실제로 유효한 날짜인지 검사하기 
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			sdf.setLenient(false);
+			sdf.parse(birthday);
+			//여기에 도달하는 경우는 입력받은 jubun 이 올바른 주민번호 일때만 도달한다 
+			// 이제 올바른 주민번호 이므로 "만 나이"를 구한다 
+			// 올해 생일이 오늘 날짜보다 뒤에 나오면 ==> 현재년도 - 태어난년도 -1 이다 
+			// 그렇지 않으면 					 ==> 현재년도 - 태어난년도 이다 
+			
+			//현재년도 
+			sdf =new SimpleDateFormat("yyyy");// SimpleDateFormat 을 년도만으로 변경
+			int current_year = Integer.parseInt(sdf.format(new Date())); // 현재 년도를 뽑아 int 타입으로 만들어 current_year 에 저장 
+			//태어난년도
+			str = ("1".equals(jubun.substring(6)) ||"2".equals(jubun.substring(6)))? "19":"20"; //만약 주민번호 7번째 자리가 1또는 2라면 str에 19를 저장하고 그외라면 20을 저장
+			int birth_year = Integer.parseInt(str +jubun.substring(0,2));
+			//올해생일
+			
+			String str_current_birthday = current_year + jubun.substring(2,5);
+			// "19980301" "20000301" 
+			sdf = new SimpleDateFormat("yyyyMMdd");
+			
+			Date current_birthday = sdf.parse(str_current_birthday);
+			
+			if(current_birthday.after(new Date())) {
+				age = current_year - birth_year - 1;// 현재년도 - 태어난년도 - 1 
+				
+			}
+			else {
+				age = current_year - birth_year; // 현재년도 - 태어난년도
+			}
+		}catch (NumberFormatException e ) {
+			throw new Exception();
+		}catch (ParseException e) {
+			throw new Exception();
+		}
+		return age;
+	}
+	//=== 주민번호 7자리를 입력받아서 올바른 주민번호 인지 아닌지 검사해주는 메소드 생성 ===
+	public static boolean isCheckJubun(String jubun) {
+		
+			//입력받은 주민번호의 글자가 7글자가 아니라면
+			if(jubun.length() != 7 ) {
+				return false;
+			}
+			try {
+			Integer.parseInt(jubun); // jubun 이 " 안녕하세요하하" 이라면 
+			}catch(NumberFormatException e ) {
+				return false;// 숫자로만 이루어지지 않았을 경우 return false
+			
+			} 
+			// 주민번호 마지막 글자는 1또는 2또는 3또는 4만 가능하므로
+			switch (jubun.substring(6)) {
+			case "1":
+			case "2":
+			case "3":
+			case "4":
+				break;
+
+			default: //주민번호 마지막 글자가 1또는 2또는 3또는 4가 아닌경우 
+				return false;
+			}//end switch
+			
+			// 입력받은 주번이 "9803321" 와 같이 달력에 존재하지 않는 주민번호라면 
+			String yymmdd = jubun.substring(0,6);
+			String str =("1".equals(jubun.substring(6)) || "2".equals(jubun.substring(6)))? "19":"20";
+			String birthday = str+ yymmdd; // "19980332
+			// birthday 가 실제로 유효한 날짜인지 검사하기 
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			sdf.setLenient(false);
+			try {
+			sdf.parse(birthday);
+			}catch (ParseException e) {
+			 return false;
+		}
+		return true; // 모든 조건이 충족했을때 트루를 주고 마침 
+		
+	}
 
 }	
 
