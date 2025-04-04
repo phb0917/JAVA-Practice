@@ -45,9 +45,13 @@ public class Main_gujikja {
 			break;
 			
 		case "2": //구직자 모두보기		
+			ctrl.view_all_info(gu_arr);
 			break;
 			
 		case "3": //구직자 검색하기
+			ctrl.search_menu(sc,gu_arr);
+			
+			
 			break;
 			
 		case "4": //프로그램종료			

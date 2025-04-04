@@ -3,6 +3,8 @@ package my.day10.abstraction;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import my.util.MyUtil;
+
 /*
 ==== *** 객체지향 프로그래밍(Object Oriented Programming)이란? *** ==== 
 
@@ -77,7 +79,86 @@ public class Gujikja {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		register_day =sdf.format(now);
 		
+	//method 생성
+	}
+	//method 생성
+	// 성별을 구해주는 메소드 생성하기 
+	
+	String gender() {
+		if((jubun.endsWith("1")) || (jubun.endsWith("3"))){
+			return "남";
+		}
+		else 
+			return "여";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//구직자의 정보를 한줄로 리턴해주는 메소드 생성하기 
+	public String getInfo() {
+	//	eomjh  qWe******    엄정화     1986-10-20   여             2025-04-04 09:05:09
 		
+		StringBuilder sb = new StringBuilder();
+		String str ;
+		sb.append(userid+"\t");
+		sb.append(passwd.substring(0,3)+"*".repeat(passwd.length()-3)+"\t");
+		sb.append(name+"\t");
+
+		if("1".equals(jubun.substring(6)) || "2".equals(jubun.substring(6))){
+			str ="19";
+					
+		}
+		else { 
+			str ="20";
+		}     
+		
+		
+	/*	if(jubun.endsWith("1")) || (jubun.endsWith("2")) {
+			str = "19";
+		}
+		else {
+			 str = "20";
+		}*/
+		
+		String birthday = str+jubun;
+		
+		//"19861020" 을 1986-10-20 으로 변경
+		
+		
+		birthday = birthday.substring(0,4) + "-" + birthday.substring(4,6)+ "-" + birthday.substring(6,8);
+		sb.append(birthday+"\t");
+		
+		sb.append(gender()+"\t");
+		int age;
+		try {
+		age = MyUtil.age(jubun);
+		sb.append(age + "\t");
+		sb.append(register_day);
+		
+		
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		
+		return sb.toString();
 	}
 	
 	
