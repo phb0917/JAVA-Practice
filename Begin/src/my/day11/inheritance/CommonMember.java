@@ -18,7 +18,7 @@ public class CommonMember {
 	
 	// Gujikja 및 Company 클래스의 부모클래스인 CommonMember 클래스의 기본생성자
 	public CommonMember() {
-		System.out.println("== 확인용 부모클래스인 CommonMember 클래스의 기본생성자 호출함!! ==");
+		//System.out.println("== 확인용 부모클래스인 CommonMember 클래스의 기본생성자 호출함!! ==");
 		
 		Date now = new Date(); // 현재시각
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -47,7 +47,7 @@ public class CommonMember {
 			// ==> 특정한 규칙을 가진 문자열의 집합을 표현하기 위해 쓰이는 형식언어
 			
 			// == 1. 정규표현식(Regular Expression) 패턴을 작성한다. == //
-			Pattern p = Pattern.compile("^[A-Za-z][A-Za-z0-9]{2,9}$");
+			Pattern p = Pattern.compile("^[A-Za-z][A-Za-z0-9]{1,9}$");
 			// ^ 은 시작을 의미한다.
 			// $ 는 끝을 의미한다.
 			// [] 는 글자 1개가 들어오는 것을 의미한다.

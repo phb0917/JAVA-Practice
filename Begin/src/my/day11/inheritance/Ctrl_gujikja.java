@@ -6,12 +6,6 @@ import my.util.MyUtil;
 
 public class Ctrl_gujikja {
 
-	// == 메인 메뉴를 보여주는 메소드 생성하기 == //
-	void main_menu() {
-		System.out.println("\n === 메인메뉴 ===\n"
-				         + "1.구직자 회원가입   2.구직자 모두보기   3.검색하기   4.프로그램종료\n");
-		System.out.print("▷ 메뉴번호 선택 : ");
-	}// end of void main_menu()-----------------------------------
 
 	
 	// == 구직자 회원가입 ==
@@ -91,7 +85,232 @@ public class Ctrl_gujikja {
 		
 	}// end of void register(Scanner sc, Gujikja[] gu_arr)----------------------------
 
+	// === 구직자 로그인 === 
+	public Gujikja login(Scanner sc, Gujikja[] gu_arr) { 
+		
+		System.out.print("> 구직자 ID : ");
+		String id = sc.nextLine();
+		
+		System.out.print("> 비밀번호 : ");
+		String passwd = sc.nextLine();
+		
+		for(int i=0; i< Gujikja.count; i++) {
+			if(id.equals(gu_arr[i].getId()) && passwd.equals(gu_arr[i].getPasswd())) {
+				return gu_arr[i];
+			}
+			
+		}
+		return null;
+	}// end of login 
+	
+	
+	// 구직자 전용 메뉴
+	public void gu_menu(Scanner sc,  Gujikja login_gu, Company[] cp_arr) {
+		String str_menuno = "";
+		do {
+		
+			System.out.println("\n ===구직자 전용메뉴(" + login_gu.getName() + "님 로그인중) ===\n"
+			         +  "1.내정보 보기   2.내정보 수정   3.모든구인회사 조회   4.구인회사검색하기\n"
+                     + "5.모든채용공고조회   6.채용공고상세보기   7.채용응모하기   8.채용응모한것조회\n"
+                     + "9.채용응모한것수정하기    10.로그아웃\n");
+			System.out.print("▷ 메뉴번호 선택 : ");
+			str_menuno = sc.nextLine();
+			
+			switch (str_menuno) {
+				case "1": //1.내정보 보기
+					view_myinfo(login_gu);
+					break;
+				case "2": //  2.내정보 수정
+					update_myinfo(sc,login_gu);
+					
+					
+					break; 
+				case "3": // 3.모든구인회사 조회
+					view_all_company_info(cp_arr);
+					break;
+				
+				case "4": //4.구인회사검색하기
+					search_company(sc,cp_arr);
+					break; 
+				
+				case "5": //5.모든채용공고조회
+					
+					break;
+				
+				case "6": //6.채용공고상세보기
+					
+					break;
+				
+				case "7": //7.채용응모하기
+					
+					break;
+				
+				case "8": // 8.채용응모한것조회
+					
+					break;
+				
+				case "9": //9.채용응모한것수정하기
+					
+					break;
+				
+				case "10": //10.로그아웃
+					
+					break;
 
+	
+				default:
+					System.out.println(">> [경고] 선택하신 번호는 메뉴에 없습니다 ");
+					break;
+			}//end switch
+		
+		
+		
+		}while(!"10".equals(str_menuno));	
+		}
+	
+	
+	
+	
+	
+
+	//== 1.내정보 보기 ==
+	private void view_myinfo(Gujikja login_gu) {
+	/*
+	  >>> 엄정화님의 정보 <<<
+	  ---------------------------------------------------------------------------------
+	      아이디   비밀번호         성명     생년월일       성별   현재만나이   가입일자
+	    ---------------------------------------------------------------------------------
+	      eomjh	  Qwer1234$    엄정화	   1986-10-20	   여	 38	   2025-04-04 10:07:05
+	    ----------------------------------------------------------------------------------  
+	  	
+	 */
+		System.out.println(" >>>" + login_gu.getName() + "님의 정보 <<< ");
+		title();
+		System.out.println(login_gu.getMyInfo());
+		
+		
+		
+	}//end void 
+	
+	//  2.내정보 수정
+	private void update_myinfo(Scanner sc, Gujikja login_gu) {
+		view_myinfo(login_gu);
+		
+		System.out.println("\n>> [주의사항] 변경하지 않고 예전의 데이터값을 그대로 사용하시려면 그냥 엔터하세요!!\n");
+		//===========================================================================//
+		
+		boolean exit_ok = false;
+		
+		do {
+			System.out.println("1. 비밀번호 : ");
+			String new_passwd = sc.nextLine(); // 기존비밀번호인 Qwer1234$ 을 Qwer0070$ 으로 변경 하려고 한다 >> 정상
+											   // 기존비밀번호인 Qwer1234$ 을 Qwer1234$ 으로 변경 하려고 한다 >> 기존비밀번호와 동일 함으로 변경이 불가 합니다 라는 메세지 출력 비정상
+											   // 기존비밀번호인 Qwer1234$ 을 Qwer00700 으로 변경 하려고 한다 >> 비밀번호 정책에 맞지 않으므로 비정상 
+											   // 그냥 엔터 하면 비밀번호 변경이 없어야 한다.
+			if (!new_passwd.equals("")) {//입력한 비밀번호 가 그냥 엔터가 아닐 경우 
+				if(new_passwd.equals(login_gu.getPasswd())) { // 입력한 비밀번호가 기존 비밀번호와 같을 경우 
+					System.out.println("기존비밀번호와 동일 함으로 변경이 불가 합니다");
+				}
+				else { // 입력한 비밀번호가 기존 비밀번호와 다를경우 
+					login_gu.setPasswd(new_passwd);
+					
+					if(login_gu.getPasswd().equals(new_passwd)) { //비밀번호 정책에 맞는 경우 
+					exit_ok = true;	
+						
+					}// end if
+				}
+			}
+			else {//입력한 비밀번호 가 그냥 엔터일 경우 
+			exit_ok = true;
+			}// end if
+		}while (!exit_ok);
+		
+		exit_ok = false ;
+		
+		do {
+		System.out.println("2. 성명 : "); 
+		String new_name = sc.nextLine(); // 기존성명인 엄정화 를 정화엄 으로 변경하려고 한다. --> 정상
+								         // 기존성명인 엄정화 를 엄정화 으로 변경하려고 한다. --> "기존 성명과 동일하므로 변경이 불가합니다." 라는 메시지 출력한다. 비정상. 
+								         // 기존성명인 엄정화 를 엄JH 으로 변경하려고 한다. --> 성명 정책에 맞지 않으므로 비정상.  
+								         // 그냥 엔터하면 성명 변경이 없어야 한다.
+		if(!new_name.equals("")) {
+			if (new_name.equals(login_gu.getName())){
+				System.out.println( "기존 성명과 동일하므로 변경이 불가합니다.");
+			}
+			else {// 입력한 성명이 기존 성명과 다를경우
+				login_gu.setName(new_name);
+				if(login_gu.getName().equals(new_name)) { // 아이디 정책에 맞는 경우
+					exit_ok = true;
+					}
+			}
+			}
+		else {//입력한 비밀번호 가 그냥 엔터일 경우 
+			exit_ok = true;
+			}// end if
+		
+		
+		
+		}while (!exit_ok);
+		do {
+			System.out.println("3. 주민번호 : "); 
+
+			String new_jubun = sc.nextLine(); 
+			if(!new_jubun.equals("")) {
+				if (new_jubun.equals(login_gu.getJubun())){
+					System.out.println( "기존 주민번호와 동일하므로 변경이 불가합니다.");
+				}
+				else {// 입력한 성명이 기존 성명과 다를경우
+					login_gu.setJubun(new_jubun);
+					if(login_gu.getJubun().equals(new_jubun)) { // 아이디 정책에 맞는 경우
+						exit_ok = true;}
+				}
+				}
+			else {//입력한 비밀번호 가 그냥 엔터일 경우 
+				exit_ok = true;
+				}// end if
+			
+			
+			}while (!exit_ok);
+	System.out.println("회원정보 변경 완료");
+		
+	}//end void
+
+	// 3.모든구인회사 조회
+		private void view_all_company_info(Company[] cp_arr) {
+		
+			if(Company.count == 0) {
+				System.out.println(">> 구인회사로 등록된 회사가 없습니다 <<");
+			}
+			else {
+				title_company();
+				
+				StringBuilder sb = new StringBuilder();
+				
+				for(int i=0; i<Company.count; i++) {
+					sb.append(cp_arr[i].getInfo()+"\n");
+				}//end for
+			System.out.println(sb.toString());
+			}
+			
+		}//end void 
+	
+	
+	
+	
+	private void title_company() {
+		System.out.println("-".repeat(70)+"\n"
+		         + " 회사명      직종타입         사업자등록번호    자본금        \n"
+		         + "-".repeat(70)); 
+		
+	}
+
+	//4.구인회사검색하기
+		private void search_company(Scanner sc, Company[] cp_arr) {
+			
+			
+		}//end void 
+	
+	
 	// === 구직자 모두보기 === //
 	public void view_all_info(Gujikja[] gu_arr) {
 		
@@ -123,7 +342,7 @@ public class Ctrl_gujikja {
 	}// end of public void view_all_info(Gujikja[] gu_arr)----------------------------
 
     // 타이틀 
-	void title() {
+	private void title() {
 		System.out.println("-".repeat(70)+"\n"
 				         + " 아이디   비밀번호       성명      생년월일       성별   현재만나이   가입일자 \n"
 				         + "-".repeat(70)); 
@@ -414,5 +633,7 @@ public class Ctrl_gujikja {
 		}// end of if~else-----------------------		
 		
 	}// end of void search_ageLine_gender(Scanner sc, Gujikja[] gu_arr)--------------
+
+	
 	
 }

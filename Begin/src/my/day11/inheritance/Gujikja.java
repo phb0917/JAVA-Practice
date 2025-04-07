@@ -35,7 +35,7 @@ public class Gujikja extends CommonMember{
 	public Gujikja() { 
 		super();// super(); 은 Gujikja 클래스의 부모 클래스인 CommonMember 클래스의 기본생성자 이다.
 				// 부모클래스의 생성자는 반드시 자식클래스의 기본생성자내에서 맨 처음에 나와야 한다.!!!
-		System.out.println(">>Gujikja 생성자 호출 << ");
+		//System.out.println(">>Gujikja 생성자 호출 << ");
 	}
  	
  	
@@ -121,6 +121,50 @@ public class Gujikja extends CommonMember{
 		}
 		
         sb.append(age + "\t");  // 만나이		
+		
+        sb.append(super.getRegister_day());
+		
+		return sb.toString();
+	}
+	// ==== 로그인 되어진 구직자의 myinfo ==== 
+String getMyInfo() {
+		
+		
+		
+		StringBuilder sb = new StringBuilder();
+	
+		sb.append(super.getId()+"\t"); 
+		sb.append(super.getPasswd()+"\t");
+		sb.append(super.getName()+"\t");
+		
+	
+		
+		String str;
+	
+		if(jubun.endsWith("1") || jubun.endsWith("2") ) {
+			str = "19";
+		}
+		else {
+			str = "20";
+		}
+		
+		
+		String birthday = str+jubun;
+		
+		
+		birthday = birthday.substring(0, 4)+"-"+birthday.substring(4, 6)+"-"+birthday.substring(6, 8);
+		sb.append(birthday+"\t");
+		
+		sb.append(gender()+"\t"); 
+		
+		int age = 0;
+		try {
+			age = MyUtil.age(jubun);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+        sb.append(age + "\t");  	
 		
         sb.append(super.getRegister_day());
 		
