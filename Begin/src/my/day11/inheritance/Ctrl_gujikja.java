@@ -1,5 +1,10 @@
 package my.day11.inheritance;
 
+
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 import my.util.MyUtil;
@@ -105,7 +110,7 @@ public class Ctrl_gujikja {
 	
 	
 	// 구직자 전용 메뉴
-	public void gu_menu(Scanner sc,  Gujikja login_gu, Company[] cp_arr) {
+	public void gu_menu(Scanner sc,  Gujikja login_gu, Company[] cp_arr,Recruit[] rc_arr) {
 		String str_menuno = "";
 		do {
 		
@@ -133,12 +138,12 @@ public class Ctrl_gujikja {
 					search_company(sc,cp_arr);
 					break; 
 				
-				case "5": //5.모든채용공고조회
-					
+				case "5": //5.모든채용공고조회 ( 현재 채용이 진행중인 것만 조회)
+					view_all_recruit_info(rc_arr);
 					break;
 				
 				case "6": //6.채용공고상세보기
-					
+					view_detail_one_recruit_info(sc,rc_arr);
 					break;
 				
 				case "7": //7.채용응모하기
@@ -167,6 +172,7 @@ public class Ctrl_gujikja {
 		
 		}while(!"10".equals(str_menuno));	
 		}
+	
 	
 	
 	
@@ -308,9 +314,209 @@ public class Ctrl_gujikja {
 		private void search_company(Scanner sc, Company[] cp_arr) {
 			
 			
+			
+			String str_menuno = "";
+			do {
+			System.out.println(">>> 구인회사 검색메뉴 <<<\n"
+                    + "1. 업종검색    2.자본금검색    3.구직자메뉴로 돌아가기"); 
+			System.out.print("▷ 검색메뉴번호 입력 : ");
+			str_menuno = sc.nextLine();
+			switch (str_menuno) {
+			case "1": // 업종검색
+					search_jobtype_company(sc,cp_arr);
+				break;
+			case "2": // 자본금검색
+					search_seedmoney_company(sc,cp_arr);
+				break;
+
+			case "3": // 구직자 메뉴로 돌아가기 
+	
+				break;
+
+			default:
+				System.out.println("[경고] 구인회사 검색메뉴에 없는 번호 입니다 ");
+				break;
+			}	//end switch	
+					
+					
+					}while(!"3".equals(str_menuno));
+			
+			
+			
+			}//end void 
+		
+		
+		// ==== 업종검색
+		private void search_jobtype_company(Scanner sc, Company[] cp_arr) {
+			System.out.print("▷ 업종명 : "); // IT it It iT   "  it   " "  i   t   "  제조 제조업 "  제조   " "    제    조   "
+			String job_type_name = String.join("",  sc.nextLine().toLowerCase().split("\\ ")) ;
+			// "it" "제조업" " 제조"
+			boolean is_existence =false;
+			StringBuilder sb = new StringBuilder();
+			for(int i=0; i<Company.count; i++) {
+				if(cp_arr[i].getJob_type().toLowerCase().contains(job_type_name)); { 
+					is_existence =true;
+					sb.append(cp_arr[i].getInfo()+"\n");
+					
+					
+				}
+			}//end for
+			if(is_existence) {
+				title_company();
+				System.out.println(sb.toString());
+				
+			}
+			else {
+				System.out.println(">>검색 하시려는 "+ job_type_name + " 업종에 해당하는 회사는 없습니다 ");
+			}
+		}
+
+		
+		
+		
+		// ===자본금검색
+		private void search_seedmoney_company(Scanner sc, Company[] cp_arr) {
+			System.out.print("▷ 자본금 : "); // "50000000000" 정상
+										// " 500,000,000 
+										// "     500000000
+											// " 5000    000	
+			
+			try {
+			long search_seed_name = Long.parseLong(String.join("",  sc.nextLine().toLowerCase().split("[, ")));
+					boolean is_existence =false;
+			StringBuilder sb = new StringBuilder();
+			for(int i=0; i<Company.count; i++) {
+				if(cp_arr[i].getSeed_money()>= search_seed_name); { 
+					is_existence =true;
+					sb.append(cp_arr[i].getInfo()+"\n");
+					
+					
+				}
+			}//end for
+			if(is_existence) {
+				title_company();
+				System.out.println(sb.toString());
+				
+			}
+			else {
+				System.out.println(">>검색 하시려는 "+new DecimalFormat("#,###").format(search_seed_name)+ " 원 이상인 회사는 없습니다  ");
+			}
+		
+			
+			
+			
+			
+			} catch (NumberFormatException e ) {
+			System.out.println("자본금은 정수로만 입력가능합니다 ");	
+			}
+				
+					
+			
+
+		
+		
+		
+		}
+//----------------------------------------------------------------
+		//5.모든채용공고조회 ( 현재 채용이 진행중인 것만 조회)
+		private void view_all_recruit_info(Recruit[] rc_arr) {
+			// 채용마감일자가 현제일자보다 이전에 있는 것이 몆게 인지 
+			
+			if(Recruit.count == 0  ) {
+				System.out.println(">>현재  채용공고가 1개도 없습니다 <<");
+			}
+			else {
+				// 채용마감일자가 현제일자보다 이전에 있는 것이 몆개 인지 알아보기
+				// 채용마감일자가 현재일과 같든지 또는 이후인것을 알아본다 
+				StringBuilder sb = new StringBuilder();
+				
+				
+				// 날짜 비교하기
+				/* 
+				 *
+		        >> Date 클래스에서 제공하는 compareTo() 메소드 <<
+		        
+		           date1.compareTo(date2);
+		        
+		             date1 날짜와 date2 날짜가 동일하면 0을 반환하고,
+		             date1 날짜가 date2 날짜 보다 이전 날짜인 경우 -1을 반환하고, 
+		             반대로 date1 날짜가 date2 날짜 보다 이후 날짜인 경우 경우 1을 반환한다. 
+		     */
+				// 2025-04-08 00:00:00  > 2025-04-08 15:38:40 
+				Date now = new Date();
+				SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMdd");
+				String str_now = sdf.format(now); // 20250408
+				
+				
+				int cnt_before = 0; // 이전일 경우 누적용
+				
+				for(int i=0; i<Recruit.count; i++) {
+					try { 
+					now = sdf.parse(str_now);
+					Date finish_day =  sdf.parse(rc_arr[i].getFinish_day());
+					int result = finish_day.compareTo(now);
+					//-1 ==> finish_day 가 now보다 이전일때 
+					//0 ==> finish_day 와 now 가 같을때 
+					//1 == > finish_day가 now 보다 이후 일때 
+					if( result ==-1 ) { // 채용마감일자가 현재일 보다 이전인경우 
+						cnt_before++;
+					}
+					else { // 채용마감일자가 현재일과 같거나 이후인 경우 
+						sb.append(rc_arr[i].recruit_info() + "\n");
+					}
+					
+					}catch (ParseException e ) {}
+				}//end for
+				
+				if(Recruit.count == cnt_before) {
+					System.out.println(">>현재 진행중인 채용공고가 1개도 없습니다 <<");
+				}
+				else {
+					System.out.println(sb.toString());
+					System.out.println("[현재 진행중인 채용공고가 " + (Recruit.count - cnt_before) + "건 있습니다 ]");
+				}
+					
+			}
 		}//end void 
-	
-	
+
+		//6.채용공고상세보기
+		private void view_detail_one_recruit_info(Scanner sc, Recruit[] rc_arr) {
+				
+			if(Recruit.count == 0  ) {
+				System.out.println(">>현재  채용공고가 1개도 없습니다 <<");
+			}
+			else
+				System.out.print(">> 채용공고번호 : ");
+				String str_recruit_no = sc.nextLine(); // 1001 1002 1003 1004(없는것) 
+				Recruit rc = null; 
+				Date now = new Date();
+				SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMdd");
+				String str_now = sdf.format(now); // 20250408
+				
+				try {
+						now = sdf.parse(str_now);
+					
+					for(int i = 0; i<Recruit.count; i++) { 
+						Date finish_day = sdf.parse( rc_arr[i].getFinish_day());
+						
+						if(!finish_day.before(now) && str_recruit_no.equals(String.valueOf(rc_arr[i].getRecruit_no()))) {// 문자열로 바꾸어 입력한 값과 비교 
+							//int 를 string 타입으로 변경 ==> string.valueof 
+							rc = rc_arr[i];
+						} 
+						
+					
+						
+					}//end for
+				} catch (ParseException e) {}
+				if(rc != null) {
+					System.out.println(rc.detail_recruit_info());
+				}
+				else { 
+					System.out.println(">> 조회하신 채용번호 "+ str_recruit_no + "은 존재하지 않거나 채용이 마감된 공고번호 입니다 ");
+				}
+		
+		}//end void 
+
 	// === 구직자 모두보기 === //
 	public void view_all_info(Gujikja[] gu_arr) {
 		

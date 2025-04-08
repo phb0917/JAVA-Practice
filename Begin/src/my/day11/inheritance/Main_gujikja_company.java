@@ -50,11 +50,41 @@ public class Main_gujikja_company {
         cp2.setSeed_money(700000000000L);
         cp_arr[Company.count++] =cp2;
         
-        
+        //----------------------------------//
        
+        Recruit[] rc_arr = new Recruit[10];
+        Recruit rc1 = new Recruit();
+        rc1.setCp(cp1);
+        rc1.setSubject("성실한 사무직원을 채용합니다 ");
+        rc1.setwork_type("정규사무직");
+        rc1.setCnt(2);
+        rc1.setYearpay(4000);
+        rc1.setFinish_day("20250508");
+        rc_arr[Recruit.count++] = rc1;		
+        		
+        		
+        
+        Recruit rc2 = new Recruit();
+        rc2.setCp(cp2);
+        rc2.setSubject("우수한 기술직원을 채용합니다.");
+        rc2.setwork_type("계약직(2년)");
+        rc2.setCnt(5);
+        rc2.setYearpay(4500);
+        rc2.setFinish_day("20250608");
+        rc_arr[Recruit.count++] = rc2;
         
         
+        Recruit rc3 = new Recruit();
+        rc3.setCp(cp2);
+        rc3.setSubject("우수한 기술직원을 채용합니다.");
+        rc3.setwork_type("계약직(2년)");
+        rc3.setCnt(10);
+        rc3.setYearpay(5000);
+        rc3.setFinish_day("20250708");
+        rc_arr[Recruit.count++] = rc3;
         
+        
+        //----------------------------------//
         
         Scanner sc = new Scanner(System.in);
         Ctrl_common ctrl_common = new Ctrl_common();
@@ -82,7 +112,7 @@ public class Main_gujikja_company {
 					
 					if(login_gu != null) {
 						System.out.println(" >> 구직자 " + login_gu.getName()+" 님 로그인 성공 <<\n");
-						ctrl_gu.gu_menu(sc, login_gu,cp_arr);// 구직자 전용 메뉴
+						ctrl_gu.gu_menu(sc, login_gu,cp_arr,rc_arr);// 구직자 전용 메뉴
 					}
 					else {
 						System.out.println(">> 구직자로 로그인 실패 <<");
@@ -94,7 +124,7 @@ public class Main_gujikja_company {
 					if(login_cp !=null) {
 						System.out.println(">>> 구인회사" + login_cp.getName() + " 기업 로그인 성공 <<<");
 						
-						ctrl_cp.cp_menu(sc,login_cp);
+						ctrl_cp.cp_menu(sc,login_cp,gu_arr,rc_arr);
 					}
 					else { 
 						System.out.println( " >> 구인회서 로그인 실패 <<\n");

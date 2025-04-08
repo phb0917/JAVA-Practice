@@ -2,6 +2,8 @@ package my.day11.inheritance;
 
 import java.util.Scanner;
 
+import my.util.MyUtil;
+
 public class Ctrl_company {
 	
 	// 2.구인회사 회원가입 
@@ -131,7 +133,7 @@ public class Ctrl_company {
 		return null;
 	}// end of 
 
-	public void cp_menu(Scanner sc, Company login_cp) {
+	public void cp_menu(Scanner sc, Company login_cp,Gujikja[] gu_arr,Recruit[] rc_arr) {
 		String str_menuno = "";
 		do {
 		
@@ -151,15 +153,15 @@ public class Ctrl_company {
 					
 					break; 
 				case "3": //3.모든구직자조회
-					
+					view_all_gujikja_info(gu_arr);
 					break;
 				
 				case "4": //4.구직자검색하기
-					
+					search_gujikja(sc,gu_arr);
 					break; 
 				
 				case "5": //5.채용공고입력
-					
+					register_recruit(sc,login_cp,rc_arr);
 					break;
 				
 				case "6": // 6.우리회사 채용공고조회
@@ -186,9 +188,13 @@ public class Ctrl_company {
 		
 		}while(!"10".equals(str_menuno));	
 		}
-	
+
+
 
 	
+
+
+
 	//1.우리회사정보 보기
 	private void view_myinfo(Company login_cp) {
 /*
@@ -375,23 +381,297 @@ public class Ctrl_company {
 		
 				
 				*/
-			
-		}//end void
+			}//end void
 	
-	
-	
-
+	//3.모든구직자조회
+	private void view_all_gujikja_info(Gujikja[] gu_arr) {
+		StringBuilder sb = new StringBuilder();
 		
+		if (Gujikja.count > 0) {
+		for(int i = 0; i<Gujikja.count; i++) {
+			
+			sb.append(gu_arr[i].getInfo() + "\n");
+			
+		}//end for
+		System.out.println("-".repeat(70)+"\n"
+		         + " 아이디   비밀번호       성명      생년월일       성별   현재만나이   가입일자 \n"
+		         + "-".repeat(70)); 
+		
+		System.out.println(sb.toString());
+		}
+		
+		
+		else {
+			System.out.println(" 구직자 정보가 없습니다 ");
+		}
+		
+		
+	}//end void
 	
+	//4.구직자검색하기
+	private void search_gujikja(Scanner sc, Gujikja[] gu_arr) {
+		// 1. 성별검색 2.연령대검색 3.구직자 연령대 및 성별검색 4.구인회사 전용메뉴로 돌아가기 
+		String str_menuno = "";
+		
+		do {
+			System.out.println(">>구직자 검색메뉴<<");
+			System.out.println("-".repeat(50)+"\n" +
+				"1. 성별검색 2.연령대검색 3.구직자 연령대 및 성별검색 4.구인회사 전용메뉴로 돌아가기 \n"
+				+"-".repeat(50));
+		System.out.println(">>> 번호입력 :   ");
+			str_menuno = sc.nextLine();
+		
+		
+		switch (str_menuno) {
+		case "1":
+			search_gender(sc,gu_arr);//성별검색
+			break;
+		
+		case "2":// 연령대검색
+			search_ageline_gujikja(sc,gu_arr);
+			break;
+		
+		case "3"://3.구직자 연령대 및 성별검색;
+			search_ageline_gender_gujikja(sc,gu_arr);
+			break;
+		case "4"://4.구인회사 전용메뉴로 돌아가기
+			
+			break;
+		default:
+		System.out.println(">> [경고] 구직자 검색 메뉴에 없는 번호입니다 <<");
+			break;
+		}//end switch
+			
+			
+		}while(!"4".equals(str_menuno));
+		
+	}//end void
+	
+	
+	
+	//5.채용공고입력
+	private void register_recruit(Scanner sc, Company login_cp, Recruit[] rc_arr) {
 		
 		
 	}
-	
-
-	
 
 
+private void search_gender(Scanner sc, Gujikja[] gu_arr) {
+	if(Gujikja.count == 0) {
+		System.out.println(" 구직자로 가입된 회원이 아무도 없습니다 ");
+	}
+	else { 
+		String input_gender = "";
+		boolean isuse_input_gender =false;
 	
 	
 	
 
+
+	do {	
+	System.out.print(">>  성별 검색  <<");
+		System.out.println(">> 성별을 선택 해주세요(남/여) : ");
+		
+		input_gender = sc.nextLine().trim();
+	
+		switch (input_gender) {
+	case "남":
+	case "여":
+		isuse_input_gender = true;
+		break;
+	default:
+		System.out.println(">>[경고] 올바른 성별이 아닙니다 ");
+		break;
+	}
+	}while(!isuse_input_gender);
+  // === 입력받은 성별에 해당하는 구직자 찾기 
+		StringBuilder sb = new StringBuilder();
+	
+	boolean isfind = false;
+		for(int i = 0; i<Gujikja.count; i++) {
+			if(gu_arr[i].gender().equals(input_gender)) {
+			isfind = true;
+				sb.append(gu_arr[i].getInfo() + "\n");
+			}
+			
+		}//end for
+		if(isfind) { 
+		System.out.println("-".repeat(70)+"\n"
+		         + " 아이디   비밀번호       성명      생년월일       성별   현재만나이   가입일자 \n"
+		         + "-".repeat(70)); 
+		
+		System.out.println(sb.toString());
+		}
+		else {
+			System.out.println(" [검색결과 성별 " + input_gender + "자 구직자는 없습니다");
+		}
+	}
+}//end void
+//연령대검색
+private void search_ageline_gujikja(Scanner sc, Gujikja[] gu_arr) {
+	
+	if(Gujikja.count == 0) {
+		System.out.println(" 구직자로 가입된 회원이 아무도 없습니다 ");
+	}
+		else { 
+			String input_ageline = "";
+			boolean isuse_input_ageline =false;
+		
+	do {	
+	System.out.print(">>  연령대 검색 <<");
+		System.out.println(">> 연령대를을 선택 해주세요 : ");
+		
+		input_ageline = sc.nextLine().trim();
+	
+		switch (input_ageline) {
+	case "0":
+	case "10":
+	case "20":
+	case "30":
+	case "40":
+	case "50":
+	case "60":
+	case "70":
+	case "80":
+		isuse_input_ageline =true;
+		break;
+	default:
+		System.out.println(">>[경고] 올바른 나이가 아닙니다 ");
+		break;
+	}
+	}while(!isuse_input_ageline);
+  // === 입력받은 성별에 해당하는 구직자 찾기 
+		StringBuilder sb = new StringBuilder();
+	
+	boolean isfind = false;
+	try {
+		for(int i = 0; i<Gujikja.count; i++) {
+			if(MyUtil.age(gu_arr[i].getJubun())/10*10 == Integer.parseInt(input_ageline)) {
+			isfind = true;
+				sb.append(gu_arr[i].getInfo() + "\n");
+			}
+		
+		}//end for
+	}catch(Exception e) {
+		
+	}
+		
+		if(isfind) { 
+		System.out.println("-".repeat(70)+"\n"
+		         + " 아이디   비밀번호       성명      생년월일       성별   현재만나이   가입일자 \n"
+		         + "-".repeat(70)); 
+		
+		System.out.println(sb.toString());
+		}
+		else {
+			System.out.println(" [검색결과 " + input_ageline + "대 구직자는 없습니다");
+		}
+}
+}//end void 
+
+//구직자 연령대 및 성별검색
+private void search_ageline_gender_gujikja(Scanner sc, Gujikja[] gu_arr) {
+   
+   if(Gujikja.count == 0) { // 구직자가 없는 경우 
+     System.out.println(">> 구직자로 가입된 회원이 아무도 없습니다. <<\n");
+     return; // 해당 메소드(지금은 search_ageline_gender_gujikja())를 종료하는 것이다.
+  }
+  
+  else { // 구직자가 있는 경우 
+     String input_ageline = "";
+     boolean isUse_input_ageline = false;
+     
+     do {
+        System.out.print("▷ 검색하고자 하는 연령대[예: 20] => ");
+        input_ageline = sc.nextLine().trim(); // "0" "10" "20" "30" ~~ "80" ==> 정상
+                                             // "25"   "    "   "강아지"    ==> 비정상 
+        switch (input_ageline) {
+            case "0":
+            case "10":
+           case "20":
+           case "30":
+           case "40":
+           case "50":
+           case "60":
+           case "70":
+           case "80":
+              isUse_input_ageline = true;
+              break;
+
+           default:
+              System.out.println("[경고] 올바른 연령대를 입력하세요!!\n");
+              break;
+        }// end of switch (input_ageline)----------------
+        
+     } while (!isUse_input_ageline);
+     // end of do~while----------------------------
+     
+     // === 입력받은 연령대에 해당하는 구직자 찾기 === //
+     boolean isFind = false;
+     
+     for(int i=0; i<Gujikja.count; i++) {
+        try {
+           if(MyUtil.age(gu_arr[i].getJubun())/10*10 == Integer.parseInt(input_ageline) ) {
+              isFind = true;
+              break;
+           }
+        } catch(Exception e) {}
+     }// end of for--------------------
+     
+     if(!isFind) {
+        System.out.println("[검색결과 연령대 " + input_ageline + "대인 구직자는 없습니다]\n");
+        return; // 해당 메소드(지금은 search_ageline_gender_gujikja())를 종료하는 것이다. 
+     }
+     
+     // ======= 성별 검색 시작 ======== //
+     String input_gender = "";
+     boolean isUse_input_gender = false;
+     
+     do {
+        System.out.print("▷ 검색하고자 하는 성별[남/여] => ");
+        input_gender = sc.nextLine().trim(); // "남" "여"   "  남  "  "  여  " ==> 정상
+                                             // ""   "    "   "강아지"  ==> 비정상 
+        switch (input_gender) {
+           case "남":
+           case "여":
+              isUse_input_gender = true;
+              break;
+
+           default:
+              System.out.println("[경고] \"남\" 또는 \"여\" 만 입력하세요!!\n");
+              break;
+        }// end of switch (input_gender)----------------
+        
+     } while (!isUse_input_gender);
+     // end of do~while----------------------------
+     
+     
+     // === 입력받은 연령대 및 성별에 해당하는 구직자 찾기 === //
+     StringBuilder sb = new StringBuilder();
+     isFind = false;
+     
+     for(int i=0; i<Gujikja.count; i++) {
+        try {
+           if(MyUtil.age(gu_arr[i].getJubun())/10*10 == Integer.parseInt(input_ageline) 
+              && gu_arr[i].gender().equals(input_gender)) {
+              
+              isFind = true;
+              sb.append(gu_arr[i].getInfo() + "\n");
+           }
+        } catch(Exception e) {}
+     }// end of for--------------------
+     
+     if(isFind) {
+       System.out.println("-".repeat(70)+"\n"+
+    		   " 아이디   비밀번호       성명      생년월일       성별   현재만나이   가입일자 \n"
+    		   +"-".repeat(70));
+        System.out.println(sb.toString());
+     }
+     else {
+        System.out.println("[검색결과 연령대 " + input_ageline + "대인 "+ input_gender +"자 구직자는 없습니다]\n");
+     }
+     
+  }
+   
+}// end of private void search_ageline_gender_gujikja(Scanner sc, Gujikja[] gu_arr)-----
+}
