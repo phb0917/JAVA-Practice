@@ -110,7 +110,7 @@ public class Ctrl_gujikja {
 	
 	
 	// 구직자 전용 메뉴
-	public void gu_menu(Scanner sc,  Gujikja login_gu, Company[] cp_arr,Recruit[] rc_arr) {
+	public void gu_menu(Scanner sc,  Gujikja login_gu, Company[] cp_arr,Recruit[] rc_arr,RecruitApply[] rcapply_arr) {
 		String str_menuno = "";
 		do {
 		
@@ -147,11 +147,11 @@ public class Ctrl_gujikja {
 					break;
 				
 				case "7": //7.채용응모하기
-					
+					input_recruitApply(sc,login_gu,rc_arr,rcapply_arr);
 					break;
 				
 				case "8": // 8.채용응모한것조회
-					
+					view_my_recruitApply(login_gu,rcapply_arr);
 					break;
 				
 				case "9": //9.채용응모한것수정하기
@@ -178,7 +178,9 @@ public class Ctrl_gujikja {
 	
 	
 	
+	
 
+	
 	//== 1.내정보 보기 ==
 	private void view_myinfo(Gujikja login_gu) {
 	/*
@@ -515,6 +517,141 @@ public class Ctrl_gujikja {
 					System.out.println(">> 조회하신 채용번호 "+ str_recruit_no + "은 존재하지 않거나 채용이 마감된 공고번호 입니다 ");
 				}
 		
+		}//end void 
+		
+		//7.채용응모하기
+		private void input_recruitApply(Scanner sc, Gujikja login_gu, Recruit[] rc_arr) {
+			
+			
+		}//end void
+		
+		// 8.채용응모한것조회 (채용 마감일자가 오늘 포함 이후인것만 보여준다)
+		private void view_my_recruitApply(Gujikja login_gu, RecruitApply[] rcapply_arr) {
+			String str_today = new SimpleDateFormat("yyyyMMdd").format(new Date());
+			StringBuilder sb = new StringBuilder();
+			boolean is_existence = false;
+			for(int i=0; i<RecruitApply.count; i++) {
+				String finish_day = rcapply_arr[i].getRc().getFinish_day();
+			int n =	MyUtil.Date_comparison(finish_day, str_today);
+			// -1 0 1 2 
+			if((n == 0 || n == 1) && login_gu.getId().equals(rcapply_arr[i].getGu().getId())) {
+			//System.out.println(rcapply_arr[i].getRc().detail_recruit_info());	 이것도 가능 
+				is_existence = true;
+				sb.append(rcapply_arr[i].getRc().detail_recruit_info()+"\n");
+			sb.append(">> 지원동기 : " + rcapply_arr[i].getApply_motive()+"\n");
+			
+			String register_day = rcapply_arr[i].getRegister_day();
+			sb.append(">> 지원일자 : " + register_day.substring(0,4)+ "-" + register_day.substring(4,6) + register_day.substring(6)+"\n\n");
+			}
+				
+			}//end for
+			if(is_existence) 
+			System.out.println(sb.toString());
+			else {
+				System.out.println(">> 현재 모집이 진행중인 채용공고에 응모한 내역이 없습니다<< ");
+			}
+		}//end void
+		
+		//7.채용응모하기
+		private void input_recruitApply(Scanner sc, Gujikja login_gu, Recruit[] rc_arr, RecruitApply[] rcapply_arr) {
+			StringBuilder sb = new StringBuilder();
+			boolean is_existence = false;
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+			String nowStr = sdf.format(now);
+			DecimalFormat dcf =  new DecimalFormat("#,###");
+			
+			int[] recruit_no_arr = new int[RecruitApply.count];
+			
+			for(int i = 0; i< RecruitApply.count; i++) {
+				if(MyUtil.Date_comparison(rcapply_arr[i].getRc().getFinish_day(),nowStr)==0||MyUtil.Date_comparison(rcapply_arr[i].getRc().getFinish_day(),nowStr)==1) {
+				is_existence= true;
+				recruit_no_arr[i] = rcapply_arr[i].getRc().getRecruit_no(); // 채용공고번호만 저장
+				sb.append(rcapply_arr[i].getRc().getRecruit_no()+"\t       " +
+						  rcapply_arr[i].getRc().getCp().getName()+ "\t" +
+						  rcapply_arr[i].getRc().getSubject()+"\t"+
+						  rcapply_arr[i].getRc().getWork_type() + "\t"+ 
+						  rcapply_arr[i].getRc().getCnt()+ "\t"+
+						 dcf.format(rcapply_arr[i].getRc().getYearpay())+ "만원 \t"+
+						  rcapply_arr[i].getRc().getFinish_day()+"\n");
+				}
+			}
+			// 채용마감일자가 오늘 포함 오늘이후로  되어진 것만 응모해야 한다
+		
+			/*
+			  ---------------------------------------------------------------------
+			  채용공고번호 회사명 채용제목 채용분야(근무형태) 채용인원 연봉 채용마감일자 
+			   --------------------------------------------------------------------
+
+			 */
+			if(is_existence) {
+			System.out.println("=".repeat(100));
+			System.out.println("채용공고번호	회사명	채용제목		채용분야		채용인원		연봉		채용마감일자    ");
+			System.out.println("=".repeat(100));
+			System.out.println(sb.toString());
+			
+			System.out.println(">> 응모하실 채용공고번호를 입력하세요 : ");
+			String str_recruit_no = sc.nextLine();	// 1001 = 이미 응모한 번호
+													// 1002 = 응모가능한 번호
+													// 9001 = 존재하기않는 번호
+			is_existence = false;							// 강아지 
+			for(int i = 0; i<recruit_no_arr.length; i++) 	{	
+				if(str_recruit_no.equals(String.valueOf(recruit_no_arr[i]))) {
+					is_existence = true;
+					if(login_gu.getId().equals(rcapply_arr[i].getGu().getId()) &&
+					str_recruit_no.equals(String.valueOf(rcapply_arr[i].getRc().getRecruit_no())) ) {
+						//이미 응모한 번호 
+						System.out.println(">> 입력하신 "+ str_recruit_no + " 이미 응모했습니다 ");
+						return;
+					}
+					else { // 응모가능한 번호 
+						System.out.println(">> 지원동기 : ");
+						sc.nextLine();
+					}
+					
+				}
+				
+				
+			}//end for
+			if(!is_existence) {
+			System.out.println(">>> 입력하신 "+ str_recruit_no + "는 채용공고에 존재하지 않습니다");
+			}
+			
+			}
+			else {
+				System.out.println(" 현재 진행중인 채용공고가없습니다  ");
+			}
+			// 채용공고 입력 1001
+			// >> 입력하신 채용공고번호 1001 번은 이미 응모하신 번호입니다 
+			
+			// 채용공고 입력 9001 
+			// 입력하신 9001 번은 채용공고에 존재하지 않습니다 
+			
+			//채용공고 1003
+			//지원동기 입력 : ㅇㅇㅇㅇㅇㅇㅇ
+			// 채용 응모 완료 했습니다 
+			
+			// 구직 응모 정원 마감으로 더이상 구직 응모가 불가합니다 
+			if(RecruitApply.count >= rcapply_arr.length) {
+				System.out.println("구직 응모 정원 마감으로 더이상 구직 응모가 불가합니다 ");
+			}
+			
+					      
+					 
+			
+				
+			
+			
+				 
+					 
+			
+			 
+					 
+			
+			
+			 
+			
+
 		}//end void 
 
 	// === 구직자 모두보기 === //

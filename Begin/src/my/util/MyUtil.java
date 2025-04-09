@@ -197,6 +197,37 @@ public class MyUtil {
 		return true; // 모든 조건이 충족했을때 트루를 주고 마침 
 		
 	}
+	
+	// 날짜 비교하기
+	/* 
+	 *
+    >> Date 클래스에서 제공하는 compareTo() 메소드 <<
+    
+       date1.compareTo(date2);
+    
+         date1 날짜와 date2 날짜가 동일하면 0을 반환하고,
+         date1 날짜가 date2 날짜 보다 이전 날짜인 경우 -1을 반환하고, 
+         반대로 date1 날짜가 date2 날짜 보다 이후 날짜인 경우 경우 1을 반환한다. 
+ */
+	public static int Date_comparison(String str_date1, String str_date2 ) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+
+		try {
+		Date date1= sdf.parse(str_date1);
+		Date date2 = sdf.parse(str_date2);
+		
+		return date1.compareTo(date2); // -1 또는 0또는 1
+		
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return 2;
+			
+		}
+		
+	
+	}// end static
+	
+	
 
 }	
 

@@ -1,5 +1,7 @@
 package my.day11.inheritance;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Scanner;
 
 import my.util.MyUtil;
@@ -133,7 +135,7 @@ public class Ctrl_company {
 		return null;
 	}// end of 
 
-	public void cp_menu(Scanner sc, Company login_cp,Gujikja[] gu_arr,Recruit[] rc_arr) {
+	public void cp_menu(Scanner sc, Company login_cp,Gujikja[] gu_arr,Recruit[] rc_arr,RecruitApply[] rcapply_arr) {
 		String str_menuno = "";
 		do {
 		
@@ -165,11 +167,11 @@ public class Ctrl_company {
 					break;
 				
 				case "6": // 6.우리회사 채용공고조회
-					
+					view_recruit_mycompany(login_cp,rc_arr);
 					break;
 				
 				case "7": //7.우리회사 채용공고 지원자조회
-					
+					view_gujikja_my_recruitapply(login_cp,rcapply_arr);
 					break;
 				
 				case "8": // 8.로그아웃
@@ -194,6 +196,9 @@ public class Ctrl_company {
 	
 
 
+
+
+	
 
 	//1.우리회사정보 보기
 	private void view_myinfo(Company login_cp) {
@@ -451,10 +456,83 @@ public class Ctrl_company {
 	
 	//5.채용공고입력
 	private void register_recruit(Scanner sc, Company login_cp, Recruit[] rc_arr) {
+		System.out.println("===== "+ login_cp.getName() + " 채용공고 등록 =====");
 		
 		
-	}
+		Recruit rc = new Recruit();
+		
+		do {
+			System.out.print("1. 채용제목 : ");
+			rc.setSubject(sc.nextLine());
+		}while (!(rc.getSubject() !=null));
+		
+		do {
+			System.out.print("2. 채용분야[예 : 정규사무직/계약직] : ");
+			rc.setwork_type(sc.nextLine());
+		} while (!(rc.getWork_type() != null));
+		
+		do {
+			System.out.print("3. 채용인원 : ");
+			try {
+				rc.setCnt(Integer.parseInt(sc.nextLine()));
+			}catch (NumberFormatException e ) {
+				System.out.println("[경고] 정수로만 입력하세요");
+			}
+			
+		} while (!(rc.getCnt() > 0));
+		
+		do {
+			System.out.print("4. 연봉[단위 만원] : "); // 5000 또는 5,000
+			try {
+				rc.setYearpay(Integer.parseInt(String.join("",sc.nextLine().split("[, ]"))));
+			}catch (NumberFormatException e ) {
+				System.out.println("[경고] 정수로만 입력하세요");
+			}
+		} while (!(rc.getYearpay() > 0));
+		
+		do {
+			System.out.print("5. 채용마감일자[예 : 20250409] : ");
+			
+			rc.setFinish_day(sc.nextLine());
+			} while (!(rc.getFinish_day() != null));
+		
+		rc.setCp(login_cp);
+		
+		rc_arr[Recruit.count++] = rc; 
+		
+		System.out.println("\n 채용공고 등록완료 \n");
+		
+	}//end void 
 
+	// 6.우리회사 채용공고조회(채용마감일자가 지난것이 아니라 진행 중인것만 조회)
+	private void view_recruit_mycompany(Company login_cp, Recruit[] rc_arr) {
+		
+		boolean is_existence =false; 
+		for(int i = 0; i<Recruit.count; i++) {
+			if( login_cp.getName().equals(rc_arr[i].getCp().getName()) ); {
+				String str_finish_day = rc_arr[i].getFinish_day();
+				
+			/*	Date now = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+				String str_now_day = sdf.format(now);// 20250409
+				
+				MyUtil.Date_comparison(str_finish_day, str_now_day)	; */
+				//또는
+				
+			int n =	MyUtil.Date_comparison(str_finish_day, new SimpleDateFormat("yyyyMMdd").format(new Date()));
+			// n은 -1 , 0 , 1 , 2
+			
+			if (n==0 || n==1 ) {// 채용 마감일자가 오늘이거나 내일 이후인것 
+				is_existence =true; 
+				System.out.println(rc_arr[i].recruit_info());
+			}
+			
+			
+			}
+			}//end for
+		if(!is_existence)
+		 System.out.println(">> 현재 진행중인 채용 공고가 없습니다 <<\n");
+	}//end void 
 
 private void search_gender(Scanner sc, Gujikja[] gu_arr) {
 	if(Gujikja.count == 0) {
@@ -674,4 +752,45 @@ private void search_ageline_gender_gujikja(Scanner sc, Gujikja[] gu_arr) {
   }
    
 }// end of private void search_ageline_gender_gujikja(Scanner sc, Gujikja[] gu_arr)-----
+
+
+//7.우리회사 채용공고 지원자조회
+private void view_gujikja_my_recruitapply(Company login_cp, RecruitApply[] rcapply_arr) {
+	StringBuilder sb = new StringBuilder();
+	boolean is_existence = false;
+	try {
+	for(int i = 0; i< RecruitApply.count; i++) {
+		if(login_cp.getId().equals(rcapply_arr[i].getRc().getCp().getId())) {
+		is_existence= true;
+		sb.append(rcapply_arr[i].getRc().getRecruit_no()+"\t" +
+				  rcapply_arr[i].getRc().getSubject()+ "\t" +
+				  rcapply_arr[i].getGu().getName()+"\t"+
+				  rcapply_arr[i].getGu().gender() + "\t"+ 
+				  MyUtil.age(rcapply_arr[i].getGu().getJubun()+
+		    	 rcapply_arr[i].getApply_motive()+ "\n"));
+			
+		}
+	}//end for
+	/* 
+	   ======================================================================
+	   채용공고번호 채용제목		지원자명  성별 나이    지원동기 
+	  =======================================================================
+	 */
+	if(is_existence) {
+		System.out.println("=".repeat(100));
+		System.out.println("채용공고번호 채용제목		지원자명  성별 나이    지원동기  ");
+		System.out.println("=".repeat(100));
+		System.out.println(sb.toString());
+		
+	}
+	else {
+		System.out.println(" 채용공고에 지원한 지원자가 없습니다 ");
+	}
+	}catch (Exception e ) {
+		
+	}
+	
+}//end void 
+
+
 }

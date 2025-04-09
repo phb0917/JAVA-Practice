@@ -150,9 +150,7 @@ public class Recruit {
 		sb.append("5. 연봉 : " + new DecimalFormat("#,###").format(yearpay) + "만원\n");
 		sb.append("6. 등록일자 : " +register_day.substring(0,4) + "-" + register_day.substring(4,6)+ "-" +register_day.substring(6,8)+"\n"); // 2025 - 04 - 08
 		sb.append("7. 채용마감일자 : " + finish_day.substring(0,4) + "-" + finish_day.substring(4,6)+ "-" +finish_day.substring(6,8)+"\n");
-		sb.append("8. 회사명 : " + cp.getName() + "\n");
-		sb.append("9. 업종 : " + cp.getJob_type() + "\n");
-		sb.append("10. 자본금 : " + new DecimalFormat("#,###").format(cp.getSeed_money()) + "원\n");
+		
 		sb.append("=".repeat(50)+"\n");
 		
 		
@@ -171,6 +169,9 @@ public class Recruit {
 			sb.append("5. 연봉 : " + new DecimalFormat("#,###").format(yearpay) + "만원\n");
 			sb.append("6. 등록일자 : " +register_day.substring(0,4) + "-" + register_day.substring(4,6)+ "-" +register_day.substring(6,8)+"\n"); // 2025 - 04 - 08
 			sb.append("7. 채용마감일자 : " + finish_day.substring(0,4) + "-" + finish_day.substring(4,6)+ "-" +finish_day.substring(6,8)+"\n");
+			sb.append("8. 회사명 : " + cp.getName() + "\n");
+			sb.append("9. 업종 : " + cp.getJob_type() + "\n");
+			sb.append("10. 자본금 : " + new DecimalFormat("#,###").format(cp.getSeed_money()) + "원\n");
 			sb.append("=".repeat(50)+"\n");
 			
 			
