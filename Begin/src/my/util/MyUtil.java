@@ -5,8 +5,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
-public class MyUtil {
+public abstract class MyUtil {
 
+	/*
+	  myutil 클래스를 추상클래스로 만드는 이유는 
+	  myutil 클래스에는 오로지 static 매소드만 생성할 예정이므로 
+	  외부에서 myutil 클래스를 사용하여 객체 생성을 못하게하기 위함이다 
+	  
+	  stactiㅊ 매소드는 인스턴스 생성없이 클래스명 만으로 사용가능하다 
+	 */
+	
+	// myutil 클래스를 추상클래스가 아닌 일반 클래스 사용한다라면 
+	// 아래와 같이 기본생성자에 접근제한자를 private 으로 해주면 된다 ;
+	//기본생성자 
+	//private myutil() {]
+	
+	
 	// === 현재시각을 알려주는 static 메소드를 생성한다. === //
 	public static String current_time() { 
 		// current_time() 메소드는 실행되어진 결과값을 String 타입으로 만들어서 return 시켜주는 것이다.
