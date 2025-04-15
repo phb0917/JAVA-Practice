@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 import my.util.MyUtil;
 
-public class Ctrl_gujikja_imple implements Ctrl_gujikja{
+public class Ctrl_gujikja_imple implements Ctrl_gujikja {
 	
 	// == 구직자 회원가입 ==
 	/*
@@ -19,7 +19,7 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 	@Override
 	public void register(Scanner sc, CommonMember_abstract[] cmbr_arr) {
 		
-		if(Gujikja_imple.count < cmbr_arr.length) { // 지금까지 생성된 구직자 회원수가 gu_arr.length(==> 정원) 보다 적을 경우에만 신규회원을 받아들인다.  
+		if(CommonMember_abstract.count < cmbr_arr.length) { // 지금까지 생성된 구직자 회원수가 cmbr_arr.length(==> 정원) 보다 적을 경우에만 신규회원을 받아들인다.  
 		
 			Gujikja_imple gu = new Gujikja_imple();
 			
@@ -31,9 +31,9 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 				System.out.print("1.아이디 : ");
 				String userid = sc.nextLine(); 
 				
-				// == 가입된 회원들에 대해 중복아이디 검사하기 == //
-				for(int i=0; i<Gujikja_imple.count; i++) {
-					if(cmbr_arr[i].getType() ==1 &&userid.equals(cmbr_arr[i].getId())) {
+				// == 가입된 구직자 회원들에 대해 중복아이디 검사하기 == //  
+				for(int i=0; i<CommonMember_abstract.count; i++) {
+					if(cmbr_arr[i].getType()==1 && userid.equals(cmbr_arr[i].getId())) {
 						System.out.println(">> 이미 사용중인 아이디 입니다. <<\n");
 				        continue outer;
 					}
@@ -77,16 +77,17 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 			} while (!(gu.getJubun() != null));
 			
 			// ===================================== //
+			
 			gu.setType(1);
 			cmbr_arr[CommonMember_abstract.count++] = gu;
-			
+			System.out.println("\n>> 구직자 회원 가입 성공했습니다.<<\n");
 		} 
 		
-		else { // 지금까지 생성된 구직자 회원수가 gu_arr.length(==> 정원) 와 같거나 큰 경우에는 신규회원을 받아들이면 안된다. 
+		else { // 지금까지 생성된 구직자 회원수가 cmbr_arr.length(==> 정원) 와 같거나 큰 경우에는 신규회원을 받아들이면 안된다. 
 			System.out.println(">> 정원 " + cmbr_arr.length + "명이 꽉차서 구직자 회원가입이 불가합니다.!! <<\n");
 		}
 		
-	}// end of void register(Scanner sc, Gujikja[] gu_arr)----------------------------
+	}// end of void register(Scanner sc, CommonMember_abstract[] cmbr_arr)----------------------------
 
 
 	// === 구직자 로그인 === //
@@ -99,16 +100,17 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 		System.out.print("▷ 비밀번호 :");
 		String passwd = sc.nextLine(); 
 		
-		for(int i=0; i<Gujikja_imple.count; i++) {
+		for(int i=0; i<CommonMember_abstract.count; i++) {
 			
-			if(id.equals(cmbr_arr[i].getId()) &&
+			if(cmbr_arr[i].getType()==1 &&  
+			   id.equals(cmbr_arr[i].getId()) &&
 			   passwd.equals(cmbr_arr[i].getPasswd()) ) {
-			   return (Gujikja_imple) cmbr_arr[i];	
+			   return (Gujikja_imple)cmbr_arr[i];	
 			}
 		}// end of for------------------------
 		
 		return null;
-	}// end of public Gujikja login(Scanner sc, Gujikja[] gu_arr)---------------------
+	}// end of public Gujikja login(Scanner sc, CommonMember_abstract[] cmbr_arr)---------------------
 	
 	
 	// === 구직자 전용메뉴 ===
@@ -135,7 +137,7 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 					break;
 					
 				case "3": // 모든구인회사 조회 
-					view_all_company_info( cmbr_arr);
+					view_all_company_info(cmbr_arr);
 					break;
 					
 				case "4": // 구인회사검색하기 
@@ -176,7 +178,7 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
         
 		System.out.println(">> 로그아웃 되었습니다. <<\n");
 		
-	}// end of public void gu_menu(Scanner sc, Gujikja login_gu)-------------------
+	}// end of public void gu_menu(Scanner sc, Gujikja_imple login_gu, CommonMember_abstract[] cmbr_arr, Recruit_imple[] rc_arr, RecruitApply_imple[] rcApply_arr)-------------------
 	
 	
 
@@ -304,16 +306,17 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 	
 	
 	// === 모든구인회사 조회 === 
-	
 	private void view_all_company_info(CommonMember_abstract[] cmbr_arr) {
-		boolean is_exists_company = false; 
+		
+		boolean is_exists_company = false;
 		for(int i=0; i<CommonMember_abstract.count; i++) {
-			if (cmbr_arr[i].getType() == 2 ) {
+			if(cmbr_arr[i].getType() == 2) {
 				is_exists_company = true;
 				break;
 			}
-		}
-		if(!is_exists_company) {
+		}// end of for----------------------------
+				
+		if(!is_exists_company) { 
 			System.out.println(">> 구인회사로 등록된 회사가 한개도 없습니다. <<\n");
 		}
 		
@@ -322,14 +325,17 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 			
 			StringBuilder sb = new StringBuilder();
 			
-			for(int i=0; i<Company_imple.count; i++) {
-			 	sb.append(cmbr_arr[i].getInfo()+"\n"); 
+			for(int i=0; i<CommonMember_abstract.count; i++) {
+				if(cmbr_arr[i].getType() == 2) {
+					sb.append(cmbr_arr[i].getInfo()+"\n");	
+				}
+				 
 			}// end of for-----------------------
 			
 			System.out.println(sb.toString());
 		}
 		
-	}// end of private void view_all_company_info(Company[] cp_arr)----------------
+	}// end of private void view_all_company_info(CommonMember_abstract[] cmbr_arr)----------------
 	
 	
 	// 타이틀 
@@ -378,7 +384,7 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 			
 		} while(!"3".equals(str_menuno));
 		
-	}// end of private void search_company(Scanner sc, Company[] cp_arr)----------
+	}// end of private void search_company(Scanner sc, CommonMember_abstract[] cmbr_arr)----------
 	
 	
 	// === 업종검색 === //
@@ -392,8 +398,9 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
 		StringBuilder sb = new StringBuilder();
 		
 		boolean is_existence = false;
-		for(int i=0; i<Company_imple.count; i++) {
-			if(((Company_imple) cmbr_arr[i]).getJob_type().toLowerCase().contains(job_type_name)) {
+		for(int i=0; i<CommonMember_abstract.count; i++) {
+			if(cmbr_arr[i].getType()==2 &&
+				((Company_imple)cmbr_arr[i]).getJob_type().toLowerCase().contains(job_type_name)) {
 				is_existence = true;
 				sb.append(cmbr_arr[i].getInfo()+"\n");
 			}
@@ -425,8 +432,9 @@ public class Ctrl_gujikja_imple implements Ctrl_gujikja{
     		StringBuilder sb = new StringBuilder();
     		boolean is_existence = false;
     		
-    		for(int i=0; i<Company_imple.count; i++) {
-    			if(((Company_imple) cmbr_arr[i]).getSeed_money() >= search_seed_money) {
+    		for(int i=0; i<CommonMember_abstract.count; i++) {
+    			if(cmbr_arr[i].getType()==2 && 
+    				((Company_imple)cmbr_arr[i]).getSeed_money() >= search_seed_money) {
     				is_existence = true;
     				sb.append(cmbr_arr[i].getInfo()+"\n");
     			}

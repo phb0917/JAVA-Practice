@@ -5,7 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Recruit_imple implements Recruit{
+public class Recruit_imple implements Recruit {
 
 	// field
 	private int recruit_no;       // 채용공고순번 (1001 시작해서 매번 1씩 증가)

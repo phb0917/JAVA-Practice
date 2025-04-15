@@ -16,9 +16,9 @@ public class Ctrl_company_imple implements Ctrl_company {
 	   Company[] cp_arr 에 저장시켜주는 메소드 생성하기 
 	*/
 	@Override
-	public void register(Scanner sc, Company_imple[] cp_arr) {
+	public void register(Scanner sc, CommonMember_abstract[] cmbr_arr) {
 		
-		if(Company_imple.count < cp_arr.length) { // 지금까지 생성된 구인회사 회원수가 cp_arr.length(==> 정원) 보다 적을 경우에만 신규회원을 받아들인다.  
+		if(CommonMember_abstract.count < cmbr_arr.length) { // 지금까지 생성된 구인회사 회원수가 cmbr_arr.length(==> 정원) 보다 적을 경우에만 신규회원을 받아들인다.  
 		
 			Company_imple cp = new Company_imple();
 			
@@ -31,8 +31,8 @@ public class Ctrl_company_imple implements Ctrl_company {
 				String id = sc.nextLine(); 
 				
 				// == 가입된 구인회사들에 대해 중복아이디 검사하기 == //
-				for(int i=0; i<Company_imple.count; i++) {
-					if(id.equals(cp_arr[i].getId())) {
+				for(int i=0; i<CommonMember_abstract.count; i++) {
+					if(cmbr_arr[i].getType()==2 && id.equals(cmbr_arr[i].getId())) {
 						System.out.println(">> 이미 사용중인 아이디 이므로 다른 아이디값을 입력하세요!! <<\n");
 				        continue outer;
 					}
@@ -102,22 +102,24 @@ public class Ctrl_company_imple implements Ctrl_company {
 			} while (!(cp.getSeed_money() > 0));
 			
 			// ===================================== //
-			cp_arr[Company_imple.count++] = cp;
+			
+			cp.setType(2);
+			cmbr_arr[CommonMember_abstract.count++] = cp;
 			
 			System.out.println(">> 구인회사 회원가입 성공!! <<\n");
 			
 		} 
 		
-		else { // 지금까지 생성된 구인회사 회원수가 cp_arr.length(==> 정원) 와 같거나 큰 경우에는 신규회원을 받아들이면 안된다. 
-			System.out.println(">> 정원 " + cp_arr.length + "개가 꽉차서 구인회사 회원가입이 불가합니다.!! <<\n");
+		else { // 지금까지 생성된 구인회사 회원수가 cmbr_arr.length(==> 정원) 와 같거나 큰 경우에는 신규회원을 받아들이면 안된다. 
+			System.out.println(">> 정원 " + cmbr_arr.length + "개가 꽉차서 구인회사 회원가입이 불가합니다.!! <<\n");
 		}
 		
-	}// end of void register(Scanner sc, Company[] cp_arr)----------------------------
+	}// end of void register(Scanner sc, CommonMember_abstract[] cmbr_arr)----------------------------
 
 	
 	// === 구인회사 로그인 ===
 	@Override
-	public Company_imple login(Scanner sc, Company_imple[] cp_arr) {
+	public Company_imple login(Scanner sc, CommonMember_abstract[] cmbr_arr) {
 		
 		System.out.print("▷ 구인회사 ID :");
 		String id = sc.nextLine(); 
@@ -127,17 +129,18 @@ public class Ctrl_company_imple implements Ctrl_company {
 		
 		for(int i=0; i<Company_imple.count; i++) {
 			
-			if(id.equals(cp_arr[i].getId()) &&
-			   passwd.equals(cp_arr[i].getPasswd()) ) {
-			   return cp_arr[i]; // 메소드 종료	
+			if(cmbr_arr[i].getType()==2 && 
+			   id.equals(cmbr_arr[i].getId()) &&
+			   passwd.equals(cmbr_arr[i].getPasswd()) ) {
+			   return (Company_imple)cmbr_arr[i]; // 메소드 종료	
 			}
 		}// end of for------------------------
 		
 		return null;
-	}// end of public Company login(Scanner sc, Company[] cp_arr)---------------------
+	}// end of public Company login(Scanner sc, CommonMember_abstract[] cmbr_arr)---------------------
 
 
-	// === 구인회사 전용메뉴 ===.
+	// === 구인회사 전용메뉴 ===
 	@Override
 	public void cp_menu(Scanner sc, Company_imple login_cp, CommonMember_abstract[] cmbr_arr, Recruit_imple[] rc_arr, RecruitApply_imple[] rcApply_arr) {
 		
@@ -193,7 +196,7 @@ public class Ctrl_company_imple implements Ctrl_company {
         
 		System.out.println(">> 로그아웃 되었습니다. <<\n");		
 		
-	}// end of public void cp_menu(Scanner sc, Company login_cp)-----------------------
+	}// end of public void cp_menu(Scanner sc, Company_imple login_cp, CommonMember_abstract[] cmbr_arr, Recruit_imple[] rc_arr, RecruitApply_imple[] rcApply_arr)-----------------------
 
 	
 
@@ -403,7 +406,15 @@ public class Ctrl_company_imple implements Ctrl_company {
 	// === 모든구직자 조회 ===
 	private void view_all_gujikja_info(CommonMember_abstract[] cmbr_arr) {
 		
-		if(Gujikja_imple.count == 0) {
+		boolean is_exists_gujikja = false;
+		for(int i=0; i<CommonMember_abstract.count; i++) {
+			if(cmbr_arr[i].getType() == 1) {
+				is_exists_gujikja = true;
+				break;
+			}
+		}// end of for----------------------------
+		
+		if(!is_exists_gujikja) {
 			System.out.println(">> 구직자로 가입된 회원이 아무도 없습니다. <<\n");
 		}
 		
@@ -411,14 +422,16 @@ public class Ctrl_company_imple implements Ctrl_company {
 			title_gujikja();
 			
 			StringBuilder sb = new StringBuilder();
-			for(int i=0; i<Gujikja_imple.count; i++) {
-				sb.append(cmbr_arr[i].getInfo()+"\n");
+			for(int i=0; i<CommonMember_abstract.count; i++) {
+				if(cmbr_arr[i].getType() == 1) {
+					sb.append(cmbr_arr[i].getInfo()+"\n");
+				}
 			}// end of for---------------------
 			
 			System.out.println(sb.toString());
 		}
 		
-	}// end of private void view_all_gujikja_info(Gujikja[] gu_arr)------
+	}// end of private void view_all_gujikja_info(CommonMember_abstract[] cmbr_arr)------
 	
 	
 	// === 구직자검색하기 ===
@@ -435,11 +448,11 @@ public class Ctrl_company_imple implements Ctrl_company {
 			
 			switch (str_menuno) {
 				case "1": // 성별검색
-					search_gender_gujikja(sc,  cmbr_arr);  
+					search_gender_gujikja(sc, cmbr_arr);  
 					break;
 					
 				case "2": // 연령대검색
-					search_ageline_gujikja(sc,  cmbr_arr);
+					search_ageline_gujikja(sc, cmbr_arr);
 					break;
 					
 				case "3": // 구직자 연령대 및 성별검색
@@ -457,16 +470,24 @@ public class Ctrl_company_imple implements Ctrl_company {
 			
 		} while (!"4".equals(str_menuno));
 		 
-	}// end of private void search_gujikja(Scanner sc, Gujikja[] gu_arr)------------
+	}// end of private void search_gujikja(Scanner sc, CommonMember_abstract[] cmbr_arr)------------
 
 
 	// === 성별검색 ===
 	private void search_gender_gujikja(Scanner sc, CommonMember_abstract[] cmbr_arr) {
 		
-		if(Gujikja_imple.count == 0) { // 구직자가 없는 경우 
+		boolean is_exists_gujikja = false;
+		for(int i=0; i<CommonMember_abstract.count; i++) {
+			if(cmbr_arr[i].getType() == 1) {
+				is_exists_gujikja = true;
+				break;
+			}
+		}// end of for----------------------------
+		
+		if(!is_exists_gujikja) {
 			System.out.println(">> 구직자로 가입된 회원이 아무도 없습니다. <<\n");
 		}
-		
+			
 		else { // 구직자가 있는 경우 
 			String input_gender = "";
 			boolean isUse_input_gender = false;
@@ -493,11 +514,13 @@ public class Ctrl_company_imple implements Ctrl_company {
 			StringBuilder sb = new StringBuilder();
 			boolean isFind = false;
 			
-			for(int i=0; i<Gujikja_imple.count; i++) {
-				if(((Gujikja_imple) cmbr_arr[i]).gender().equals(input_gender)) {
+			for(int i=0; i<CommonMember_abstract.count; i++) {
+				if(cmbr_arr[i].getType()==1  
+				   && ((Gujikja_imple)cmbr_arr[i]).gender().equals(input_gender)) 
+				  {
 					isFind = true;
 					sb.append(cmbr_arr[i].getInfo() + "\n");
-				}
+				  }
 			}// end of for--------------------
 			
 			if(isFind) {
@@ -509,13 +532,21 @@ public class Ctrl_company_imple implements Ctrl_company {
 			}
 		}
 		
-	}// end of private void search_gender_gujikja(Scanner sc, Gujikja[] gu_arr)------
+	}// end of private void search_gender_gujikja(Scanner sc, CommonMember_abstract[] cmbr_arr)------
 	
 
 	// === 연령대검색 ===
     private void search_ageline_gujikja(Scanner sc, CommonMember_abstract[] cmbr_arr) {
 
-		if(Gujikja_imple.count == 0) { // 구직자가 없는 경우 
+    	boolean is_exists_gujikja = false;
+		for(int i=0; i<CommonMember_abstract.count; i++) {
+			if(cmbr_arr[i].getType() == 1) {
+				is_exists_gujikja = true;
+				break;
+			}
+		}// end of for----------------------------
+		
+		if(!is_exists_gujikja) {
 			System.out.println(">> 구직자로 가입된 회원이 아무도 없습니다. <<\n");
 		}
 		
@@ -552,12 +583,14 @@ public class Ctrl_company_imple implements Ctrl_company {
 			StringBuilder sb = new StringBuilder();
 			boolean isFind = false;
 			
-			for(int i=0; i<Gujikja_imple.count; i++) {
+			for(int i=0; i<CommonMember_abstract.count; i++) {
 				try {
-					if(MyUtil.age(((Gujikja_imple) cmbr_arr[i]).getJubun())/10*10 == Integer.parseInt(input_ageline) ) {
-						isFind = true;
-						sb.append( cmbr_arr[i].getInfo() + "\n");
-					}
+					if(cmbr_arr[i].getType()==1 
+					   && MyUtil.age(((Gujikja_imple)cmbr_arr[i]).getJubun())/10*10 == Integer.parseInt(input_ageline) 
+					  ) {
+						  isFind = true;
+						  sb.append(cmbr_arr[i].getInfo() + "\n");
+					    }
 				} catch(Exception e) {}
 			}// end of for--------------------
 			
@@ -570,17 +603,25 @@ public class Ctrl_company_imple implements Ctrl_company {
 			}
 		}    	
 		
-	}// end of private void search_ageline_gujikja(Scanner sc, Gujikja[] gu_arr)-----
+	}// end of private void search_ageline_gujikja(Scanner sc, CommonMember_abstract[] cmbr_arr)-----
     
     
     // 구직자 연령대 및 성별검색
  	private void search_ageline_gender_gujikja(Scanner sc, CommonMember_abstract[] cmbr_arr) {
  		
- 		if(Gujikja_imple.count == 0) { // 구직자가 없는 경우 
+ 		boolean is_exists_gujikja = false;
+		for(int i=0; i<CommonMember_abstract.count; i++) {
+			if(cmbr_arr[i].getType() == 1) {
+				is_exists_gujikja = true;
+				break;
+			}
+		}// end of for----------------------------
+		
+		if(!is_exists_gujikja) {
 			System.out.println(">> 구직자로 가입된 회원이 아무도 없습니다. <<\n");
 			return; // 해당 메소드(지금은 search_ageline_gender_gujikja())를 종료하는 것이다.
 		}
-		
+				
 		else { // 구직자가 있는 경우 
 			String input_ageline = "";
 			boolean isUse_input_ageline = false;
@@ -613,12 +654,14 @@ public class Ctrl_company_imple implements Ctrl_company {
 			// === 입력받은 연령대에 해당하는 구직자 찾기 === //
 			boolean isFind = false;
 			
-			for(int i=0; i<Gujikja_imple.count; i++) {
+			for(int i=0; i<CommonMember_abstract.count; i++) {
 				try {
-					if(MyUtil.age(((Gujikja_imple) cmbr_arr[i]).getJubun())/10*10 == Integer.parseInt(input_ageline) ) {
-						isFind = true;
-						break;
-					}
+					if(cmbr_arr[i].getType()==1 
+					   && MyUtil.age(((Gujikja_imple)cmbr_arr[i]).getJubun())/10*10 == Integer.parseInt(input_ageline) 
+					  ) {
+						  isFind = true;
+						  break;
+					    }
 				} catch(Exception e) {}
 			}// end of for--------------------
 			
@@ -654,14 +697,15 @@ public class Ctrl_company_imple implements Ctrl_company {
 			StringBuilder sb = new StringBuilder();
 			isFind = false;
 			
-			for(int i=0; i<Gujikja_imple.count; i++) {
+			for(int i=0; i<CommonMember_abstract.count; i++) {
 				try {
-					if(MyUtil.age(((Gujikja_imple) cmbr_arr[i]).getJubun())/10*10 == Integer.parseInt(input_ageline) 
-					   && ((Gujikja_imple) cmbr_arr[i]).gender().equals(input_gender)) {
-						
-						isFind = true;
-						sb.append(cmbr_arr[i].getInfo() + "\n");
-					}
+					 if(cmbr_arr[i].getType()==1 
+					    && MyUtil.age(((Gujikja_imple)cmbr_arr[i]).getJubun())/10*10 == Integer.parseInt(input_ageline) 
+					    && ((Gujikja_imple)cmbr_arr[i]).gender().equals(input_gender)
+					   ) {
+						  isFind = true;
+						  sb.append(cmbr_arr[i].getInfo() + "\n");
+					     }
 				} catch(Exception e) {}
 			}// end of for--------------------
 			
@@ -675,7 +719,7 @@ public class Ctrl_company_imple implements Ctrl_company {
 			
 		}
  		
- 	}// end of private void search_ageline_gender_gujikja(Scanner sc, Gujikja[] gu_arr)-----
+ 	}// end of private void search_ageline_gender_gujikja(Scanner sc, CommonMember_abstract[] cmbr_arr)-----
     
 	
     // === 채용공고입력하기 === 

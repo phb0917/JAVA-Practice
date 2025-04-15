@@ -1,5 +1,8 @@
 package my.day15.f.interface_gujikja;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import my.util.MyUtil;
 
 public class Gujikja_imple extends CommonMember_abstract implements Gujikja {
@@ -12,7 +15,7 @@ public class Gujikja_imple extends CommonMember_abstract implements Gujikja {
 	private String jubun;  // 주민번호인데 앞자리 6자리에 + 성별을 나타내는 1자리까지만 입력한다.
                            // 예: "9506201"  "9607202"   "0006203"  "0007204"  "1106203" 
 	
- 	static int count;      // Gujikja 객체(인스턴스)의 개수를 알아오려는 용도
+ //	static int count;      // Gujikja 객체(인스턴스)의 개수를 알아오려는 용도
 	
 	// 기본생성자 생략됨!!
  	public Gujikja_imple() {
@@ -37,7 +40,22 @@ public class Gujikja_imple extends CommonMember_abstract implements Gujikja {
 	public String getJubun() {
 		return jubun;
 	}
-
+	@Override
+	public void setName(String name) {
+		// == 1. 정규표현식(Regular Expression) 패턴을 작성한다. == //
+		Pattern p = Pattern.compile("^[가-힣]{2,6}$");
+		
+		// == 2. 문자열이 주어진 정규식 패턴과 일치하는지 판별하는 객체를 생성한다. == //
+		Matcher m = p.matcher(name);
+		
+		// == 3. 판별하도록 한다. == //
+		if(m.matches()) {
+			super.setName(name);
+		}
+		else {
+			System.out.println("[경고] 성명은 공백이 없는 한글로만 이루어져야 하며 최소 2글자 이상 최대 6글자로만 되어져야 합니다.\n"); 
+		}
+	}
 
 	// ==== 성별을 구해주는 메소드 생성하기 ====
 	@Override
@@ -152,9 +170,7 @@ public class Gujikja_imple extends CommonMember_abstract implements Gujikja {
 		
 		return sb.toString();
 	}
-
-
-
+	
 	
 }
 

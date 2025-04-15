@@ -10,6 +10,7 @@ public class Main_gujikja_company {
 		CommonMember_abstract[] cmbr_arr = new CommonMember_abstract[9];
 	
 		Gujikja_imple gu1 = new Gujikja_imple(); 
+		gu1.setType(1);
 		gu1.setId("eomjh");
 		gu1.setPasswd("Qwer1234$");
 		gu1.setName("엄정화");
@@ -17,40 +18,42 @@ public class Main_gujikja_company {
 		cmbr_arr[CommonMember_abstract.count++] = gu1;
 		
 		Gujikja_imple gu2 = new Gujikja_imple(); 
-        gu2.setId("leess"); 
+		gu2.setType(1);
+		gu2.setId("leess"); 
         gu2.setPasswd("Abcd12345$");
         gu2.setName("이순신"); 
         gu2.setJubun("8604011");
         cmbr_arr[CommonMember_abstract.count++] = gu2;
 		
         Gujikja_imple gu3 = new Gujikja_imple(); 
+        gu3.setType(1);
         gu3.setId("chaew"); 
         gu3.setPasswd("Wxyz1234$");
         gu3.setName("차은우"); 
         gu3.setJubun("0106053"); 
         cmbr_arr[CommonMember_abstract.count++] = gu3;
      // ================================= // 
-        
-        Company_imple[] cp_arr = new Company_imple[3];
                 
         Company_imple cp1 = new Company_imple();
+        cp1.setType(2);
         cp1.setId("samsung");
         cp1.setPasswd("Abcd1234$");
         cp1.setName("삼성");
         cp1.setBusiness_number("8123456789");
         cp1.setJob_type("제조업");
         cp1.setSeed_money(80000000000L);
-        cp_arr[Company_imple.count++] = cp1;
+        cmbr_arr[CommonMember_abstract.count++] = cp1;
         
     
         Company_imple cp2 = new Company_imple();
+        cp2.setType(2);
         cp2.setId("lg");
         cp2.setPasswd("Abcd0070$");
         cp2.setName("엘지");
         cp2.setBusiness_number("7123456789");
         cp2.setJob_type("IT");
         cp2.setSeed_money(70000000000L);
-        cp_arr[Company_imple.count++] = cp2;
+        cmbr_arr[CommonMember_abstract.count++] = cp2;
         
      // ================================= //
         
@@ -120,7 +123,6 @@ public class Main_gujikja_company {
 		
      // ================================= //	
 		
-        
         Scanner sc = new Scanner(System.in);
         Ctrl_common  ctrl_common = new Ctrl_common_imple();
         Ctrl_gujikja ctrl_gu = new Ctrl_gujikja_imple();
@@ -138,7 +140,7 @@ public class Main_gujikja_company {
 					break;
 					
 				case "2": // 구인회사 회원가입
-					ctrl_cp.register(sc, cp_arr);
+					ctrl_cp.register(sc, cmbr_arr); 
 					break;
 					
 				case "3": // 구직자 로그인
@@ -147,7 +149,7 @@ public class Main_gujikja_company {
 					if(login_gu != null) {
 						System.out.println(">> 구직자 " + login_gu.getName() + "님 로그인 성공^^ <<\n");
 						
-						ctrl_gu.gu_menu(sc, login_gu, cp_arr, rc_arr, rcApply_arr); // 구직자 전용메뉴
+						ctrl_gu.gu_menu(sc, login_gu, cmbr_arr, rc_arr, rcApply_arr); // 구직자 전용메뉴
 					}
 					else {
 						System.out.println(">> 구직자로 로그인 실패 ㅜㅜ <<\n");
@@ -156,7 +158,7 @@ public class Main_gujikja_company {
 					break;	
 					
 				case "4": // 구인회사 로그인
-					Company_imple login_cp = ctrl_cp.login(sc, cp_arr);
+					Company_imple login_cp = ctrl_cp.login(sc, cmbr_arr);
 					
 					if(login_cp != null) {
 						System.out.println(">> 구인회사 " + login_cp.getName() + "기업 로그인 성공^^ <<\n");

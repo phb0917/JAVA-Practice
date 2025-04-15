@@ -7,27 +7,22 @@ import java.util.regex.Pattern;
 
 import my.util.MyUtil;
 
-public abstract class CommonMember_abstract implements CommonMember{
- 
-	// CommonMember_abstract 클래스는 commonmember 인터페이스를 구현해야하지만 구현을 안하고
-// CommonMember_abstract 클래스의 자식클래스에서 구현하겠다는 뜻이다 
-	// Gujikja 클래스와 Company 클래스에서 공통으로 사용되어지는 field(속성) 생성하기 
-	private int type; 			 // 
-	public int getType() {
-		return type;
-	}
-
-
-	public void setType(int type) {
-		this.type = type;
-	}
-
-
+public abstract class CommonMember_abstract implements CommonMember {
+// CommonMember_abstract 클래스에 abstract 을 준 의미는 
+// CommonMember 인터페이스를 구현해야 하지만 구현(메서드 오버라이딩)을 안하고,
+// CommonMember_abstract 클래스의 자식 클래스에서 구현하겠다는 뜻이다. 	
+	
+	// Gujikja 클래스와 Company 클래스에서 공통으로 사용되어지는 field(속성) 생성하기
+	private int type;             // Gujikja 와 Company 를 구분짓는 용도. 
+	                              // type 값이 1 이라면 Gujikja 라고 보고, 
+	                              // type 값이 2 이라면 Company 라고 보겠다.      
+	
 	private String id;            // 아이디   
 	private String passwd;        // 비밀번호
 	private String name;          // 성명 또는 회사명
 	private String register_day;  // 가입일자
-	static int count; // 구직자 객체 및 company 객체가 생성되어진 개수를 알아오려는 용도
+	
+	static int count;   // Gujikja 객체(인스턴스) 및 Company 객체가 생성되어진 개수를 알아오려는 용도
 	
 	// Gujikja 및 Company 클래스의 부모클래스인 CommonMember 클래스의 기본생성자
 	public CommonMember_abstract() {
@@ -43,10 +38,24 @@ public abstract class CommonMember_abstract implements CommonMember{
 	
 	// 캡슐화(EnCapsulation == 은닉화) 되어진 field 를 메소드를 통해 접근하도록 만들기 //
 	// === getter, setter 하기 === 
+	
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		if(type == 1 || type == 2)
+			this.type = type;
+		// type 값이 1 이라면 Gujikja 라고 보고, 
+		// type 값이 2 이라면 Company 라고 보겠다.
+	}
+	
+	
 	public String getId() {
 		return id;
 	}
 	
+
 	public void setId(String id) {
 		if( id == null || id.isBlank() ) {
 			System.out.println("[경고] 아이디는 공백이 아닌 글자로 입력하셔야 합니다.\n");
@@ -103,19 +112,9 @@ public abstract class CommonMember_abstract implements CommonMember{
 	
 	
 	public void setName(String name) {
-		// == 1. 정규표현식(Regular Expression) 패턴을 작성한다. == //
-		Pattern p = Pattern.compile("^[가-힣]{2,6}$");
-		
-		// == 2. 문자열이 주어진 정규식 패턴과 일치하는지 판별하는 객체를 생성한다. == //
-		Matcher m = p.matcher(name);
-		
-		// == 3. 판별하도록 한다. == //
-		if(m.matches()) {
-			this.name = name;
-		}
-		else {
-			System.out.println("[경고] 성명은 공백이 없는 한글로만 이루어져야 하며 최소 2글자 이상 최대 6글자로만 되어져야 합니다.\n"); 
-		}
+		this.name = name;
+	
+	
 	}
 	
 	
@@ -123,10 +122,14 @@ public abstract class CommonMember_abstract implements CommonMember{
 		return register_day;
 	}
 
-
 	
-	
-	//==================================================================================
-	
+	// ================================================ //
 	
 }
+
+
+
+
+
+
+

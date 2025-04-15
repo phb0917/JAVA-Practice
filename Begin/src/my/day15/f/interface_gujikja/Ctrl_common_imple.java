@@ -1,6 +1,6 @@
 package my.day15.f.interface_gujikja;
 
-public class Ctrl_common_imple implements Ctrl_common{
+public class Ctrl_common_imple implements Ctrl_common {
 
 	// == 시작화면(메인 메뉴)를 보여주는 메소드 생성하기 == //
 	@Override
