@@ -1,6 +1,7 @@
 package my.day17.a.collection;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -205,12 +206,87 @@ public class HashMap_main_5 {
 		 else {
 			 System.out.println("\n >>> "+input_id+" 아이디가 이미 사용중입니다. 회원가입 실패!! <<< ");
 		 }
+		 System.out.println("\n==========================================\n");
+		 // === mbr_map 에 저장되어진 모든 key 들을 읽어오는 세번째 방법 === //
 		 
+		 Set<String> key_set3 = mbr_map.keySet();
 		 
+		 Iterator<String> itrator = key_set3.iterator();
 		 
+		 while(itrator.hasNext()) {
+			 /*
+			  itrator.hasNext() 는 
+			  itrator 에서 현재 itrator 가 가지고 있는 여러 string 데이터중 
+			  하나를 꺼내서 존재하는지를 알아보는 것이다 
+			  존재하면 true , 존재하지 않으면 false 리턴 해준다 
+			  그러므로 현재의 키의 개수가 11개 이므로 11번 반복을 할 것이다 
+			  */
+			 String key = itrator.next();
+			 /*
+			   실제로 키값인 String 값을 itrator 에서 꺼낸다 
+			   @@ 그러면 꺼낸 string 값은 더이상 itrator 에는 남아 있지 않게 된다 @@ 
+			   */
+			 System.out.println(key);
+			 
+			 
+			 
+			 
+			 
+		 }// end while
 		 
+		 System.out.println("~~~~~~~~~~~~~~~~ 또한번더 ~~~~~~~~~~~~~~~~~");
 		 
-
+		 while(itrator.hasNext()) {
+		
+			 String key = itrator.next();
+			
+			 System.out.println(key);
+			  }// end while
+		 System.out.println("~~~~~~~~~~~~~~~~ 다시 처음부터 해본다  ~~~~~~~~~~~~~~~~~");
+			 
+		 itrator = key_set3.iterator();
+			 
+		 while(itrator.hasNext()) {
+				
+			 String key = itrator.next();
+			
+			 System.out.println(key);
+			  }// end while
+		
+		 
+		 System.out.println("\n== mbr_map 에 저장되어진 모든 Member 객체의 정보를 출력해주는 세번째 방법 =="); 
+		 
+		 Set<String> key_set4 = mbr_map.keySet();
+		 
+		 Iterator<String> itrator4 = key_set4.iterator();
+		 
+		 while(itrator4.hasNext()) {
+			 mbr_map.get(itrator4.next()).print_info();
+			 
+		 }//end while 
+		 
+		 System.out.println("\n>>> mbr_map 에서 key 값이 leess 인 Member 를 삭제하기 ");
+		 
+		Member deleted_mbr = mbr_map.remove("leess");
+		 
+		System.out.println(">>> 삭제된 회원정보 <<<");
+		deleted_mbr.print_info();
+		System.out.println(">>> 삭제후 남은 회원 정보 <<<");
+		for(String key : key_set4) {
+			mbr_map.get(key).print_info();
+		}
+		
+		 System.out.println("\n>>> mbr_map 에 저장된 모든  Member 객체를 삭제하기 ");
+		 mbr_map.clear();
+		 System.out.println(">>> 삭제후 남은 회원 정보 <<<");
+			for(String key : key_set4) {
+				mbr_map.get(key).print_info();
+			}
+			// mbr_map 의 크기 
+			
+			System.out.println(mbr_map.size());
+			
+			System.out.println(mbr_map.isEmpty());
 	}// end of main(String[] args)---------------------
 
 }
