@@ -45,37 +45,42 @@ import java.io.IOException;
 	              write(int b)             
 */
 
-public class InputStream_main_01 {
+public class InputStream_main_02 {
 
-	public static void main(String[] args) throws IOException  {
-		
-		System.out.println(">> 영문자를 입력하세요 [종료하려면 x를 입력하세요] <<");
-		
+	public static void main(String[] args) throws IOException {
+
 		int input = 0;
-		int totalByte = 0;
 		
-		while(true) {
-			input = System.in.read();  // abcd엔터
-			// System.in 은 키보드라고 생각하면 된다.
-			// 키보드에서 입력한 문자열중 글자 1개씩(char)만 읽어들여 char 에 해당하는 int 타입으로 반환해주는 것이다.
+		while( (input = System.in.read()) != -1 ) {
+			// -1 은 키보드로 부터 Ctrl+Z(윈도우), Ctrl+D(유닉스,리눅스,맥) 를 입력한 값이다.
+			// 키보드로 부터 Ctrl+Z(윈도우), Ctrl+D(유닉스,리눅스,맥) 를 하면 while 을 빠져 나간다.
 			// System.in.read() 는 1byte 씩 읽어온다.
 			
-			// 엔터는 \r\n 인데 \r(carriage return) 이 13 이고 \n(new line)이 10인 것이다. 즉, 엔터란 문장 맨 앞으로 가서(\r) 줄 바꿈(\n)을 해라는 것이다.
-			if(input != 13 && input != 10) { // 엔터는 제외
-				if( (char)input == 'x' || (char)input == 'X' ) 
-					break;
-				
-				System.out.println("글자 1개씩(char)만 읽어들여 char 에 해당하는 int 타입으로 반환한 값 : " + input);
-				totalByte++;
-				
-				System.out.println("▷ 글자 1개 : " + (char)input);
-			}
+			System.out.println("\n === 키보드로 부터 데이터 입력받기 ===");
+			System.out.println("화면에 출력 [println 을 사용한 input] : " + input);
+			System.out.print("화면에 출력 [write 을 사용한 input] : ");
+			System.out.write(input);
+			System.out.flush();
+			/*
+			    flush 란 ? 출력버퍼에 임시로 보관되어 스트림으로 출력될 때까지 대기중인 데이터를 스트림으로 내보내는 것을 flush 라고 한다.
+			    write() 메소드는 flush() 메소드와 함께 사용되어야만 출력버퍼에 들어가 있던 내용이 모니터(또는 파일)에 출력된다. 
+			    그런데  flush() 메소드를 사용하지 않아도 모니터(또는 파일)에 출력되는 경우이라면 auto flush 가 적용되어졌기 때문이다. 
+		    */
 			
-		}// end of while(true)------------------
+			System.out.println("");
+			System.out.println("화면에 출력 [println 을 사용한 input] : " + (char)input);
+			
+		}// end of while(System.in.read() != -1)----------------------
 		
-		
-		System.out.println(">> 입력받은 byte 수 : " + totalByte + "byte");
+		System.out.println("\n >> 프로그램 종료 <<");
 
-	}// end of main(String[] args)---------------------------------
+	}// end of main()-------------------------------------------------
 
 }
+
+
+
+
+
+
+
